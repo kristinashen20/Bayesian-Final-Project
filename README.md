@@ -191,3 +191,84 @@ Operational insights
 - Post-acute planning (home supports vs rehab) is the highest-leverage intervention.
 - Flag high-utiliser diabetics (≥ 1 prior admission) on day 1 and schedule enhanced follow-up.
 - Medication intensification (change, insulin) acts as a mediator—useful for explanation, less for frontline triage thresholds.
+
+
+
+---
+
+## XGBoost Classifier with xgboost
+
+---
+
+ 
+ ### (1) Method overview
+Dataset UCI “Diabetes 130-US Hospitals 1999–2008” – ~100k encounters after cleaning
+
+Feature set All available structured variables (demographics, diagnoses, comorbidities, prior utilization, treatments, discharge details, after encoding/cleaning)
+
+Categorical handling All string/categorical variables one-hot encoded; rare diagnosis codes grouped as “rare_diag”
+
+Numeric handling Raw values retained (except grouping for rare/error codes)
+
+Class imbalance Stratified train-test split, and threshold tuning for rare-event recall
+
+Validation split 80 / 20 train-test (stratified on outcome)
+
+Thresholding Default 0.5 and best‑F1 threshold both reported for interpretability
+
+
+### (2) Result sheet 1 – model summary
+| Parameter                        | Setting / Approach      |
+| -------------------------------- | ----------------------- |
+| **n\_estimators**                | 100                     |
+| **max\_depth**                   | 5                       |
+| **learning\_rate**               | 0.1                     |
+| **subsample, colsample\_bytree** | 0.8, 0.8                |
+| **random\_state**                | 42                      |
+| **eval\_metric**                 | logloss                 |
+| **Features**                     | All after preprocessing |
+
+
+
+### (3) Performance of the XGBoost model
+| Metric                                  |  XGBoost | What it tells us                                                                               |
+| --------------------------------------- | -------: | ---------------------------------------------------------------------------------------------- |
+| **ROC-AUC (↑)**                         | **0.66** | ≈ 66% chance the model ranks a readmitted patient above a non-readmitted one.                  |
+| **Average Precision (↑)**               | **0.21** | Precision–recall summary for an imbalanced target (baseline ≈ 0.11).                           |
+| **Accuracy (↑)**                        | **0.89** | Dominated by negatives; not a reliable summary for rare events.                                |
+| **Recall (class 1, best F1 threshold)** | **0.52** | Model captures over half of true 30-day readmissions (with lower precision at this threshold). |
+| **F1 (class 1, best F1 threshold)**     | **0.28** | Balanced score for rare event prediction at tuned threshold.                                   |
+
+
+### (4) Threshold comparison
+| Threshold      | Precision (1) | Recall (1) | F1 (1) | Accuracy |
+| -------------- | ------------- | ---------- | ------ | -------- |
+| Default (0.5)  | 0.60          | 0.01       | 0.03   | 0.89     |
+| Best F1 (0.12) | 0.19          | 0.52       | 0.28   | 0.69     |
+
+
+
+### (5) Feature importance and interpretation
+| Feature                         |    Importance | What it suggests                                      |
+| ------------------------------- | ------------: | ----------------------------------------------------- |
+| **number\_inpatient**           |          High | Frequent prior admissions = higher readmission risk   |
+| **discharge\_disposition\_id**  |          High | Non-routine discharge destinations raise risk         |
+| **diag\_1 (primary diagnosis)** | Moderate/High | Underlying diagnosis matters for readmission          |
+| **age**                         |      Moderate | Older age groups at higher risk                       |
+| **insulin / therapy flags**     |      Moderate | Escalating or changing diabetes treatment is a marker |
+| **number\_emergency**           |      Moderate | Prior ER visits = unstable disease                    |
+| **change**                      |      Moderate | Medication changes = more complex or unstable cases   |
+
+### (6) Interpretation and operational insights
+At a recall-optimized threshold (0.12), the model identifies over half of all true 30-day readmissions, though at the cost of lower precision (increased false positives).
+
+This makes XGBoost suitable as a frontline risk flagger or screening tool, with follow-up by clinicians to review flagged cases.
+
+Discharge destination and prior utilization status are consistently the highest-leverage features for hospital intervention.
+
+Performance is in line with published literature benchmarks for this outcome.
+
+
+
+
+
