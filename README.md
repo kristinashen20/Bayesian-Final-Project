@@ -189,6 +189,6 @@ CPD of insulin | age, change, diabetesMed, admission_type_id, disposition
 | **7** | roots `admission_type_id`, `diabetesMed` | 53 % elective vs 47 % emergency; 77 % of stays involve diabetes meds.                                      |
 
 Operational insights
-• Post-acute planning (home supports vs rehab) is the highest-leverage intervention.
-• Flag high-utiliser diabetics (≥ 1 prior admission) on day 1 and schedule enhanced follow-up.
-• Medication intensification (change, insulin) acts as a mediator—useful for explanation, less for frontline triage thresholds.
+- Post-acute planning (home supports vs rehab) is the highest-leverage intervention.
+- Flag high-utiliser diabetics (≥ 1 prior admission) on day 1 and schedule enhanced follow-up.
+- Medication intensification (change, insulin) acts as a mediator—useful for explanation, less for frontline triage thresholds.
