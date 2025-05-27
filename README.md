@@ -49,12 +49,12 @@ The workflow:
 ### Length of Stay (LOS)
 Most patients are discharged in under 6 days — right-skewed with a long tail to 14.
 
-<img src="../images/eda_time_in_hospital.png" width="480">
+<img src="images/eda_time_in_hospital.png" width="480">
 
 ### Readmission Outcome Balance
 About 37% of patients were readmitted within 30 days. The rest split into “NO” (52%) and “>30” (11%).
 
-<img src="../images/eda_readmitted_bar.png" width="480">
+<img src="images/eda_readmitted_bar.png" width="480">
 
 ---
 
@@ -64,12 +64,12 @@ About 37% of patients were readmitted within 30 days. The rest split into “NO�
 Younger patients (<50) have **higher** readmission rates — opposite of typical risk expectations.
 Rates fall steadily with age (possible survivorship bias or different care pathways). Age buckets carry a clear monotonic trend—keep ordered encoding.
 
-<img src="../images/eda_readmit_rate_by_age.png" width="480">
+<img src="images/eda_readmit_rate_by_age.png" width="480">
 
 ### Medication Change
 Patients whose medication dosages were adjusted are more likely to return within 30 days.
 
-<img src="../images/eda_readmit_rate_by_change.png" width="480">
+<img src="images/eda_readmit_rate_by_change.png" width="480">
 
 ---
 
@@ -79,7 +79,7 @@ Patients whose medication dosages were adjusted are more likely to return within
 The strongest correlation is `time_in_hospital` ↔ `num_medications` (ρ ≈ 0.45).  
 No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all numeric features in logistic regression without severe variance inflation.
 
-<img src="../images/eda_correlation_table.png" width="720">
+<img src="images/eda_correlation_table.png" width="720">
 
 ---
 
