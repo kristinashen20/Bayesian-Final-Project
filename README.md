@@ -138,7 +138,7 @@ balance of goodness-of-fit and model simplicity.
 
 | PC (best) | Hill-Climb | Chow–Liu Tree |
 |-----------|------------|---------------|
-| ![PC](images/pc_structure.png) | ![HC](images/hc_structure.png) | ![Tree](images/tree_structure.png) |
+| ![PC](images/pgmpy_pc_structure.png) | ![HC](images/pgmpy_hc_structure.png) | ![Tree](images/pgmpy_tree_structure.png) |
 
 |                 | Key edges you can point out |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -174,3 +174,19 @@ CPD of insulin | age, change, diabetesMed, admission_type_id, disposition
   Highest-risk parent combo → 0.590 “Up/Steady” insulin
 ... (see full notebook for complete tables)
 
+---
+**Interpreting the CPTs**
+| #     | Node / CPT shown                         | Take-away                                                                                                  |
+| ----- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **1** | `discharge_disposition_id`               | 62 % routine home vs 38 % SNF/rehab/other.                                                                 |
+| **2** | `insulin`                                | Dose level driven by admission type, age, med change, etc.; 59 % “Up/Steady” in highest-risk parent combo. |
+| **3** | `age`                                    | Right-skewed; older bins dominate when meds are changed and disposition is non-routine.                    |
+| **4** | `number_inpatient`                       | High-utiliser status ≈ 50 % when eventual readmission = 1.                                                 |
+| **5** | `target`                                 | Readmit risk 14 % if disposition = SNF vs 6 % if routine home.                                             |
+| **6** | `change`                                 | Med list changed in 58 % of encounters that have diabetes meds; almost never when no meds ordered.         |
+| **7** | roots `admission_type_id`, `diabetesMed` | 53 % elective vs 47 % emergency; 77 % of stays involve diabetes meds.                                      |
+
+Operational insights
+• Post-acute planning (home supports vs rehab) is the highest-leverage intervention.
+• Flag high-utiliser diabetics (≥ 1 prior admission) on day 1 and schedule enhanced follow-up.
+• Medication intensification (change, insulin) acts as a mediator—useful for explanation, less for frontline triage thresholds.
