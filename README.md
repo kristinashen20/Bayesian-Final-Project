@@ -136,7 +136,7 @@ balance of goodness-of-fit and model simplicity.
 
 ### 4&nbsp;&nbsp;Graph comparison
 
-| PC (best) | Hill-Climb | Chow–Liu Tree |
+| PC (best) | Hill-Climb | Tree |
 |-----------|------------|---------------|
 | ![PC](images/pgmpy_pc_structure.png) | ![HC](images/pgmpy_hc_structure.png) | ![Tree](images/pgmpy_tree_structure.png) |
 
@@ -173,8 +173,8 @@ CPD of number_inpatient | disposition, target
 CPD of insulin | age, change, diabetesMed, admission_type_id, disposition
   Highest-risk parent combo → 0.590 “Up/Steady” insulin
 ... (see full notebook for complete tables)
+</details>
 
----
 **Interpreting the CPTs**
 | #     | Node / CPT shown                         | Take-away                                                                                                  |
 | ----- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
