@@ -84,7 +84,7 @@ No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all num
 ---
 
 
-## 5  Modelling Road‑map
+## 5. Modelling Road‑map
 
 | Model | Library | Purpose |
 |-------|---------|---------|
@@ -93,12 +93,11 @@ No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all num
 | XGBoost | `xgboost` | Non‑linear performance ceiling |
 
 ---
-
 ## Bayesian-Network Classifier with **pgmpy**
 
 ---
 
-### 1&nbsp;&nbsp;Method overview
+### (1)&nbsp;&nbsp;Method overview
 * **Dataset** UCI “Diabetes 130-US Hospitals 1999–2008” – 59 k encounters after cleaning  
 * **Feature set** 14 high-signal columns (demographics, discharge context, prior utilisation, therapy flags)  
 * **Numeric handling** `KBinsDiscretizer(n_bins = 3, strategy = "quantile")` → low / mid / high bins  
@@ -111,7 +110,7 @@ No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all num
 
 ---
 
-### 2&nbsp;&nbsp;Result sheet 1 – model selection
+### (2)&nbsp;&nbsp;Result sheet 1 – model selection
 
 | Candidate | Validation BIC (↓) |
 |-----------|-------------------:|
@@ -124,7 +123,7 @@ balance of goodness-of-fit and model simplicity.
 
 ---
 
-### 3&nbsp;&nbsp;Performance of the selected PC model
+### (3)&nbsp;&nbsp;Performance of the selected PC model
 
 | Metric                    | PC Network | What it tells us                                                                                 |
 | ------------------------- | ---------: | ------------------------------------------------------------------------------------------------ |
@@ -134,7 +133,7 @@ balance of goodness-of-fit and model simplicity.
 
 ---
 
-### 4&nbsp;&nbsp;Graph comparison
+### (4)&nbsp;&nbsp;Graph comparison
 
 | PC (best) | Hill-Climb | Tree |
 |-----------|------------|---------------|
@@ -153,7 +152,7 @@ balance of goodness-of-fit and model simplicity.
 
 ---
 
-### 5&nbsp;&nbsp;Best-model CPT excerpts (PC)
+### (5)&nbsp;&nbsp;Best-model CPT excerpts (PC)
 
 <details>
 <summary><strong>Click to view the main conditional-probability tables</strong></summary>
