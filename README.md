@@ -176,7 +176,7 @@ CPD of insulin | age, change, diabetesMed, admission_type_id, disposition
 </details>
 <summary><strong>Click to view the main conditional-probability tables</strong></summary>
 
-```text
+```
 
 **Interpreting the CPTs**
 | #     | Node / CPT shown                         | Take-away                                                                                                  |
