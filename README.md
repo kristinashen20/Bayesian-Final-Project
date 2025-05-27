@@ -93,3 +93,5 @@ No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all num
 | XGBoost | `xgboost` | Non‑linear performance ceiling |
 
 ---
+
+## **Bayesian-Network Classifier with `pgmpy`**
