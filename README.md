@@ -5,7 +5,7 @@ Predicting early readmission for cardiac inpatients using an interpretable **Bay
 
 ---
 
-## 1  Project Abstract
+## 1. Project Abstract
 Early 30‑day readmission of heart‑disease patients drives cost and signals gaps in continuity of care.  
 We build an interpretable **Bayesian Network** (BN) to capture probabilistic dependencies between demographics, utilisation variables, co‑morbidities and the binary `<30 d` readmission outcome, using the UCI *Diabetes 130‑US Hospitals* dataset (101 766 encounters).  
 The workflow:
@@ -20,7 +20,7 @@ The workflow:
 
 ---
 
-## 2  Dataset
+## 2. Dataset
 
 | Item | Value |
 |------|-------|
@@ -31,7 +31,7 @@ The workflow:
 
 ---
 
-## 3  Data‑Cleaning Pipeline
+## 3. Data‑Cleaning Pipeline
 
 | Step | Action |
 |------|--------|
@@ -44,32 +44,45 @@ The workflow:
 
 ---
 
-## 4  Exploratory Data Analysis (highlights)
+## 4. Key Exploratory Insights
 
-### Numeric snapshots  
+### Length of Stay (LOS)
+Most patients are discharged in under 6 days — right-skewed with a long tail to 14.
 
-| Feature | Mean ± SD | 75 %‑tile | Notes |
-|---------|-----------|-----------|-------|
-| `time_in_hospital` | 4.3 ± 3.0 days | 6 d | short LOS; long‑tail to 14 d |
-| `num_lab_procedures` | 42.9 ± 19.5 | 56 | quasi‑normal; heavy utilisation |
-| `num_medications` | 16.6 ± 8.5 | 20 | right‑skew; outliers > 60 |
+<img src="../images/eda_time_in_hospital.png" width="480">
 
-### Categorical distributions  
-* **Race**: 75 % Caucasian, 19 % African‑American — heavy imbalance.  
-* **Age**: skewed older; `[70‑80)` largest bucket.  
-* **Readmission flag**: `<30 d` = 37 % of encounters (positive class).  
+### Readmission Outcome Balance
+About 37% of patients were readmitted within 30 days. The rest split into “NO” (52%) and “>30” (11%).
 
-### Readmission rate drivers  
-| Factor | Higher risk | Lower risk |
-|--------|-------------|------------|
-| Age | `[20‑30)` 18 % | `[80‑90)` 10 % |
-| Medication dosage change | *Yes* 12 % | *No* 11 % |
-| On diabetes meds | *Yes* 12 % | *No* 10 % |
-
-### Correlation matrix (numeric)  
-No pair |ρ| > 0.5 ⇒ multicollinearity is low; all numeric features retained.
+<img src="../images/eda_readmitted_bar.png" width="480">
 
 ---
+
+## Key Drivers of Readmission Risk
+
+### Age
+Younger patients (<50) have **higher** readmission rates — opposite of typical risk expectations.
+Rates fall steadily with age (possible survivorship bias or different care pathways). Age buckets carry a clear monotonic trend—keep ordered encoding.
+
+<img src="../images/eda_readmit_rate_by_age.png" width="480">
+
+### Medication Change
+Patients whose medication dosages were adjusted are more likely to return within 30 days.
+
+<img src="../images/eda_readmit_rate_by_change.png" width="480">
+
+---
+
+
+## Correlation Matrix
+
+The strongest correlation is `time_in_hospital` ↔ `num_medications` (ρ ≈ 0.45).  
+No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all numeric features in logistic regression without severe variance inflation.
+
+<img src="../images/eda_correlation_table.png" width="720">
+
+---
+
 
 ## 5  Modelling Road‑map
 
