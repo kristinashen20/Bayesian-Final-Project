@@ -40,7 +40,7 @@ The workflow:
 | **Impute** | diagnosis NaNs → `UnknownDiag`; other categoricals → mode |
 | **Binary target** | `readmitted_binary = 1` if `<30`, else 0 |
 | **Cardiac filter** | keep rows where any of `diag_1/2/3` ∈ 390‑459 or 785 |
-| **Save** | `diabetic_heart_cleaned.csv` (~9 MB) |
+| **Save** | `diabetic_heart_cleaned.csv` |
 
 ---
 
