@@ -174,6 +174,9 @@ CPD of insulin | age, change, diabetesMed, admission_type_id, disposition
   Highest-risk parent combo → 0.590 “Up/Steady” insulin
 ... (see full notebook for complete tables)
 </details>
+<summary><strong>Click to view the main conditional-probability tables</strong></summary>
+
+```text
 
 **Interpreting the CPTs**
 | #     | Node / CPT shown                         | Take-away                                                                                                  |
