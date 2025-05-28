@@ -93,6 +93,37 @@ No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all num
 | XGBoost | `xgboost` | Non‑linear performance ceiling |
 
 ---
+## Logistic Regression: Predicting 30-Day Readmission for Diabetic Patients
+
+In this stage of the project, we implemented a logistic regression model to predict early 30-day hospital readmissions among diabetic patients using the UCI “Diabetes 130-US hospitals for years 1999–2008” dataset.
+
+### Preprocessing and Pipeline
+- Removed non-informative identifiers (`encounter_id`, `patient_nbr`)
+- Separated features into categorical and numerical groups
+- Applied one-hot encoding to categorical variables
+- Built a pipeline using `scikit-learn` to handle preprocessing and modeling
+
+### Class Imbalance Handling
+- The dataset is highly imbalanced, with only about 11% of patients readmitted within 30 days
+- To address this, we used `class_weight='balanced'` in logistic regression, which adjusts the loss function to penalize mistakes on the minority class more heavily
+
+### Performance Metrics
+
+| Metric                  | Value |
+|-------------------------|-------|
+| Accuracy                | 64%   |
+| AUC (ROC)               | 0.631 |
+| Precision (Readmitted)  | 0.17  |
+| Recall (Readmitted)     | 0.55  |
+| F1-score (Readmitted)   | 0.26  |
+
+The model shows improved recall for readmitted patients, which is important in healthcare settings where failing to identify a high-risk patient can lead to costly outcomes. Performance was evaluated using ROC and Precision-Recall curves.
+
+### Next Steps
+- Benchmark against other classifiers such as XGBoost
+- Explore resampling strategies (e.g., SMOTE, undersampling)
+- Analyze feature importances and odds ratios for interpretability
+
 ## Bayesian-Network Classifier with **pgmpy**
 
 ---
