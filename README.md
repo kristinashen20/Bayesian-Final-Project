@@ -143,7 +143,7 @@ Categorical handling All string/categorical variables one-hot encoded; rare di
 
 Numeric handling Raw values retained (except grouping for rare/error codes)
 
-Class imbalance Stratified train-test split, and threshold tuning for rare-event recall
+Class imbalance Handled with scale_pos_weight parameter in XGBoost (neg/pos ratio = 7.89), plus stratified train-test split, and threshold tuning for rare-event recall
 
 Validation split 80 / 20 train-test (stratified on outcome)
 
@@ -151,33 +151,37 @@ Thresholding Default 0.5 and best‑F1 threshold both reported for interpretab
 
 
 ### (2) Result sheet 1 – model summary
-| Parameter                        | Setting / Approach      |
-| -------------------------------- | ----------------------- |
-| **n\_estimators**                | 100                     |
-| **max\_depth**                   | 5                       |
-| **learning\_rate**               | 0.1                     |
-| **subsample, colsample\_bytree** | 0.8, 0.8                |
-| **random\_state**                | 42                      |
-| **eval\_metric**                 | logloss                 |
-| **Features**                     | All after preprocessing |
+| Parameter                        | Setting / Approach                          |
+| -------------------------------- | ------------------------------------------- |
+| **n\_estimators**                | 100                                         |
+| **max\_depth**                   | 5                                           |
+| **learning\_rate**               | 0.1                                         |
+| **subsample, colsample\_bytree** | 0.8, 0.8                                    |
+| **random\_state**                | 42                                          |
+| **eval\_metric**                 | logloss                                     |
+| **scale\_pos\_weight**           | 7.89 (**negatives/positives in train set**) |
+| **Features**                     | All after preprocessing                     |
+
 
 
 
 ### (3) Performance of the XGBoost model
-| Metric                                  |  XGBoost | What it tells us                                                                               |
-| --------------------------------------- | -------: | ---------------------------------------------------------------------------------------------- |
-| **ROC-AUC (↑)**                         | **0.66** | ≈ 66% chance the model ranks a readmitted patient above a non-readmitted one.                  |
-| **Average Precision (↑)**               | **0.21** | Precision–recall summary for an imbalanced target (baseline ≈ 0.11).                           |
-| **Accuracy (↑)**                        | **0.89** | Dominated by negatives; not a reliable summary for rare events.                                |
-| **Recall (class 1, best F1 threshold)** | **0.52** | Model captures over half of true 30-day readmissions (with lower precision at this threshold). |
-| **F1 (class 1, best F1 threshold)**     | **0.28** | Balanced score for rare event prediction at tuned threshold.                                   |
+| Metric                                  | XGBoost (weighted) | What it tells us                                                                       |
+| --------------------------------------- | -----------------: | -------------------------------------------------------------------------------------- |
+| **ROC-AUC (↑)**                         |           **0.66** | ≈ 66% chance the model ranks a readmitted patient above a non-readmitted one.          |
+| **Average Precision (↑)**               |           **0.20** | Precision–recall summary for an imbalanced target (baseline ≈ 0.11).                   |
+| **Accuracy (↑)**                        |           **0.67** | Lower than unweighted; expected, as recall is prioritized for rare event.              |
+| **Recall (class 1, best F1 threshold)** |           **0.59** | Model now identifies **nearly 60% of true 30-day readmissions** when tuned for recall. |
+| **F1 (class 1, best F1 threshold)**     |           **0.27** | Balanced score for rare event prediction at tuned threshold.                           |
+
 
 
 ### (4) Threshold comparison
 | Threshold      | Precision (1) | Recall (1) | F1 (1) | Accuracy |
 | -------------- | ------------- | ---------- | ------ | -------- |
-| Default (0.5)  | 0.60          | 0.01       | 0.03   | 0.89     |
-| Best F1 (0.12) | 0.19          | 0.52       | 0.28   | 0.69     |
+| Default (0.5)  | 0.18          | 0.54       | 0.27   | 0.67     |
+| Best F1 (0.48) | 0.17          | 0.59       | 0.27   | 0.64     |
+
 
 
 
@@ -193,13 +197,13 @@ Thresholding Default 0.5 and best‑F1 threshold both reported for interpretab
 | **change**                      |      Moderate | Medication changes = more complex or unstable cases   |
 
 ### (6) Interpretation and operational insights
-At a recall-optimized threshold (0.12), the model identifies over half of all true 30-day readmissions, though at the cost of lower precision (increased false positives).
+Class weighting with scale_pos_weight is essential for rare event detection.
 
-This makes XGBoost suitable as a frontline risk flagger or screening tool, with follow-up by clinicians to review flagged cases.
+At a recall-optimized threshold, the model can identify almost 60% of all true 30-day readmissions—a major improvement over default settings.
 
-Discharge destination and prior utilization status are consistently the highest-leverage features for hospital intervention.
+This enhances the model’s value as a frontline readmission risk screener, supporting targeted intervention and follow-up.
 
-Performance is in line with published literature benchmarks for this outcome.
+Feature importance and top risk drivers remain consistent: prior utilization, discharge disposition, and therapy changes.
 
 
 ---
