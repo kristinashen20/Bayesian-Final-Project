@@ -104,8 +104,8 @@ No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all num
 * **Feature set** 14 high-signal columns (demographics, discharge context, prior utilisation, therapy flags)  
 * **Numeric handling** `KBinsDiscretizer(n_bins = 3, strategy = "quantile")` → low / mid / high bins  
 * **Structures compared**  
-  1. **PC algorithm**   (constraint-based)  
-  2. Hill-Climb + BIC   (max 3 parents)  
+  1. PC algorithm   (constraint-based)  
+  2. **Hill-Climb + BIC**   (max 3 parents)  
   3. Chow–Liu Tree      (root = `target`)  
 * **Parameter fit** Bayesian Estimator (`prior_type="BDeu"`)  
 * **Validation split** 80 / 20 train-test
