@@ -120,7 +120,7 @@ No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all num
 | Hill-Climb       | − 70 883.71 |
 | Tree             | − 70 984.39 |
 
-**PC is chosen** because it has the most-negative (best) BIC, i.e. the best
+**Hill-Climb is chosen** because it has the least-negative (best) BIC, i.e. the best
 balance of goodness-of-fit and model simplicity.
 
 ---
@@ -154,45 +154,70 @@ balance of goodness-of-fit and model simplicity.
 
 ---
 
-### (5)&nbsp;&nbsp;Best-model CPT excerpts (PC)
+### (5)&nbsp;&nbsp;Best-model CPT excerpts (Hill-Climb)
 
 <details>
 <summary><strong>Click to view the main conditional-probability tables</strong></summary>
 
 ```text
-CPD of discharge_disposition_id
-  (0) Routine home  → 0.618
-  (1) SNF / Rehab   → 0.382
-────────────────────────────────────────────────────────────
-CPD of target | discharge_disposition_id
-  disposition 0 → P(readmit)=0.063
-  disposition 1 → P(readmit)=0.142
-────────────────────────────────────────────────────────────
-CPD of number_inpatient | disposition, target
-  target=1 & dispo=1 → P(high bin) = 0.497
-────────────────────────────────────────────────────────────
-CPD of insulin | age, change, diabetesMed, admission_type_id, disposition
-  Highest-risk parent combo → 0.590 “Up/Steady” insulin
+CPD of number_inpatient
++--------------------------+-----+-----------------------------+
+| change                   | ... | change(1)                   |
++--------------------------+-----+-----------------------------+
+| discharge_disposition_id | ... | discharge_disposition_id(1) |
++--------------------------+-----+-----------------------------+
+| insulin                  | ... | insulin(3)                  |
++--------------------------+-----+-----------------------------+
+| number_inpatient(0)      | ... | 0.5                         |
++--------------------------+-----+-----------------------------+
+| number_inpatient(1)      | ... | 0.5                         |
++--------------------------+-----+-----------------------------+
+
+CPD of admission_type_id
++----------------------+-----+---------------------+
+| age                  | ... | age(9)              |
++----------------------+-----+---------------------+
+| number_inpatient     | ... | number_inpatient(1) |
++----------------------+-----+---------------------+
+| admission_type_id(0) | ... | 0.6275841701122268  |
++----------------------+-----+---------------------+
+| admission_type_id(1) | ... | 0.37241582988777316 |
++----------------------+-----+---------------------+
+
+CPD of target
++--------------------------+-----+-----------------------------+
+| diabetesMed              | ... | diabetesMed(1)              |
++--------------------------+-----+-----------------------------+
+| discharge_disposition_id | ... | discharge_disposition_id(1) |
++--------------------------+-----+-----------------------------+
+| number_inpatient         | ... | number_inpatient(1)         |
++--------------------------+-----+-----------------------------+
+| target(0)                | ... | 0.8151526056543937          |
++--------------------------+-----+-----------------------------+
+| target(1)                | ... | 0.18484739434560626         |
++--------------------------+-----+-----------------------------+
 ... (see full notebook for complete tables)
 
 ```
 </details>
 
 **Interpreting the CPTs**
-| #     | Node / CPT shown                         | Take-away                                                                                                  |
-| ----- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **1** | `discharge_disposition_id`               | 62 % routine home vs 38 % SNF/rehab/other.                                                                 |
-| **2** | `insulin`                                | Dose level driven by admission type, age, med change, etc.; 59 % “Up/Steady” in highest-risk parent combo. |
-| **3** | `age`                                    | Right-skewed; older bins dominate when meds are changed and disposition is non-routine.                    |
-| **4** | `number_inpatient`                       | High-utiliser status ≈ 50 % when eventual readmission = 1.                                                 |
-| **5** | `target`                                 | Readmit risk 14 % if disposition = SNF vs 6 % if routine home.                                             |
-| **6** | `change`                                 | Med list changed in 58 % of encounters that have diabetes meds; almost never when no meds ordered.         |
-| **7** | roots `admission_type_id`, `diabetesMed` | 53 % elective vs 47 % emergency; 77 % of stays involve diabetes meds.                                      |
 
-Operational insights
-- Post-acute planning (home supports vs rehab) is the highest-leverage intervention.
-- Flag high-utiliser diabetics (≥ 1 prior admission) on day 1 and schedule enhanced follow-up.
-- Medication intensification (change, insulin) acts as a mediator—useful for explanation, less for frontline triage thresholds.
+| #     | Node / CPT shown                                | Take-away                                                                                              |
+|-------|-------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| **1** | `discharge_disposition_id`                      | 62 % routine home vs 38 % SNF/rehab/other.                                                             |
+| **2** | `insulin`                                       | Dose level driven by admission type, age, med change, etc.; 59 % “Up/Steady” in highest-risk parent combo. |
+| **3** | `age`                                           | Right-skewed; older bins dominate when meds are changed and disposition is non-routine.               |
+| **4** | `number_inpatient`                              | High-utiliser status ≈ 50 % when eventual readmission = 1.                                             |
+| **5** | `target`                                        | Readmit risk 14 % if disposition = SNF vs 6 % if routine home.                                        |
+| **6** | `change`                                        | Med list changed in 58 % of encounters that have diabetes meds; **almost never** when no meds ordered. |
+| **7** | roots `admission_type_id`, `diabetesMed`        | 53 % elective vs 47 % emergency; 77 % of stays involve diabetes meds.                                 |
+
+**Operational insights**
+
+- **Prioritise post-acute planning** – Ensure robust home support or targeted rehabilitation referrals, since non-routine discharges (e.g., to SNF/rehab) more than double readmission risk.
+- **Identify high-utiliser diabetics early** – Flag any patient with ≥ 1 prior admission on day 1 to allocate enhanced transitional‐care and follow-up resources.
+- **Use medication changes as explanatory signals** – Dosing adjustments and insulin intensity reveal patient complexity but should inform risk explanations rather than serve as sole triage triggers.  
 
 ---
 ## Logistic Regression: Predicting 30-Day Readmission for Diabetic Patients
