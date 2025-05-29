@@ -116,8 +116,8 @@ No pair exceeds ρ = 0.7 → low multicollinearity, so we can retain all num
 
 | Candidate | Validation BIC (↓) |
 |-----------|-------------------:|
-| **PC**           | **− 72 294.85** |
-| Hill-Climb       | − 70 883.71 |
+| PC           | − 72 294.85 |
+| **Hill-Climb**       | **− 70 883.71** |
 | Tree             | − 70 984.39 |
 
 **Hill-Climb is chosen** because it has the least-negative (best) BIC, i.e. the best
@@ -137,7 +137,7 @@ balance of goodness-of-fit and model simplicity.
 
 ### (4)&nbsp;&nbsp;Graph comparison
 
-| PC (best) | Hill-Climb | Tree |
+| PC | Hill-Climb (best) | Tree |
 |-----------|------------|---------------|
 | ![PC](images/pgmpy_pc_structure.png) | ![HC](images/pgmpy_hc_structure.png) | ![Tree](images/pgmpy_tree_structure.png) |
 
